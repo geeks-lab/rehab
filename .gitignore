@@ -1,0 +1,4 @@
+# Project exclude paths
+/fastcampus/oop-practice/.gradle/
+/fastcampus/oop-practice/out/production/classes/
+/fastcampus/oop-practice/out/test/classes/
