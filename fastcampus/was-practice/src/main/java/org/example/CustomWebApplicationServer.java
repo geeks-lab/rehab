@@ -31,28 +31,27 @@ public class CustomWebApplicationServer {
                 logger.info("[CustomWebApplicationServer] client connected!");
 
                 /**
+                 * step2. 사용자의 요청이 들어올 때마다 Thread를 새로 생성해서 사용자 요청을 처리하도록 한다.
+                 * */
+                new Thread(new ClientRequestHandler(clientSocket)).start();
+
+
+
+
+
+
+
+                /**
                  * Step1 - 사용자 요청을 메인 Thread가 처리하도록 한다.
                  * */
 
-                try(InputStream in = clientSocket.getInputStream(); OutputStream out = clientSocket.getOutputStream()){
+                /*try(InputStream in = clientSocket.getInputStream(); OutputStream out = clientSocket.getOutputStream()){
                     //InpuStream을 line by line 으로 읽고 싶기 때문에 BufferedReader로 바꿈
                     //InputStream -> InputStreamReader -> BufferedReader 순서로 감싸줌
                     BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
                     //OutputStream을 DataOutputSteram으로 감싸줌
                     DataOutputStream dos = new DataOutputStream(out);
 
-                    /*//http protocal 구경하기
-                    String line;
-                    while((line = br.readLine())!=""){
-                        System.out.println(line);
-                    }*/
-                    /***
-                     * GET / HTTP/1.1
-                     * Host: localhost:8080
-                     * Connection: Keep-Alive
-                     * User-Agent: Apache-HttpClient/4.5.13 (Java/11.0.14.1)
-                     * Accept-Encoding: gzip,deflate
-                     * */
 
                     // 클라이언트로부터 입력된 것을 HttpRequest에 버퍼드리더로 전달하면
                     HttpRequest httpRequest = new HttpRequest(br);
@@ -71,10 +70,19 @@ public class CustomWebApplicationServer {
                         HttpResponse response = new HttpResponse(dos);
                         response.response200Header("application/json", body.length);
                         response.responseBody(body);
-                    }
+                    }*/
+
+                    /**
+                     * 요구사항대로 메인스레드에서 작업을 진행했지만 메인스레드에서 작업을 진행하게 되면
+                     * 만약 메인스레드에서 작업하고 있는데 블락킹이 된다면 다음 클라이언트 요청은
+                     * 해당 작업이 끝날 때까지 기다려야 한다는 심각한 문제가 있다.
+                     * 따라서 요청이 들어올 때마다 별도의 스레드에서 작업을 진행할 수 있도록 리팩도링을 한다
+                     * -> step2. 사용자의 요청이 들어올 때마다 Thread를 새로 생성해서 사용자 요청을 처리하도록 한다.
+                     *
+                     * */
 
 
-                }
+
             }
         }
     }
