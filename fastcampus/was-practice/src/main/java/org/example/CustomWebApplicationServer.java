@@ -9,9 +9,13 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class CustomWebApplicationServer {
     private final int port;
+
+    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
 
     private static final Logger logger = LoggerFactory.getLogger(CustomWebApplicationServer.class);
 
@@ -33,11 +37,16 @@ public class CustomWebApplicationServer {
                 /**
                  * step2. 사용자의 요청이 들어올 때마다 Thread를 새로 생성해서 사용자 요청을 처리하도록 한다.
                  * */
-                new Thread(new ClientRequestHandler(clientSocket)).start();
+                //new Thread(new ClientRequestHandler(clientSocket)).start();
 
+                /**
+                 * 위와 같은 방식으로 클라이언트의 요청이 들어올 때마다 스레드를 생성하여 스택에 메모리를 할당하는 것은
+                 * 메모리와 cpu에 큰 부담을 주어 요청이 몰려 리소스가 없으면 서버가 다운될 수도 있다.
+                 * 따라서 아래와 같이 리팩도링을 한다.
+                 * step3. Thread Pool을 적용해 안정적인 서비스가 가능하도록 한다.
+                 * */
 
-
-
+                executorService.execute(new ClientRequestHandler(clientSocket));
 
 
 
