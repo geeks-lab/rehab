@@ -1,7 +1,9 @@
 package org.example;
 
-import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.example.calculator.Calculator;
 import org.example.calculator.PositiveNumber;
 import org.slf4j.Logger;
@@ -11,12 +13,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @WebServlet("/calculate")
-public class CalculatorServlet extends GenericServlet {
-
+public class CalculatorServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(CalculatorServlet.class);
 
     @Override
-    public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.info("service");
         int operand1 = Integer.parseInt(request.getParameter("operand1"));
         String operator = request.getParameter("operator");
@@ -25,7 +26,7 @@ public class CalculatorServlet extends GenericServlet {
         int result = Calculator.calculate(new PositiveNumber(operand1), operator, new PositiveNumber(operand2));
 
         PrintWriter writer = response.getWriter();
-        writer.println(writer);
+        writer.println(result);
     }
 
 
