@@ -18,7 +18,6 @@ public class ReflectionTest {
 
     @Test
     void controllerScan() {
-
         // org.example 하위에 해당하는 모든 클래스에 리플랙션을 사용할 것이다
         Reflections reflections = new Reflections("org.example");
 
@@ -27,6 +26,10 @@ public class ReflectionTest {
         beans.addAll(reflections.getTypesAnnotatedWith(Controller.class));
 
         logger.debug("beans : [{}]",beans);
+
+        /**
+         * 위 부분 리팩토링
+         * */
 
     }
 }
