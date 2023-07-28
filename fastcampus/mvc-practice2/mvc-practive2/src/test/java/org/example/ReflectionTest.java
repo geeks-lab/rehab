@@ -6,7 +6,9 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.annotation.Annotation;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -18,18 +20,17 @@ public class ReflectionTest {
 
     @Test
     void controllerScan() {
+        Set<Class<?>> beans = getTypesAnnotatedWith(List.of(Controller.class));
+        logger.debug("beans : [{}]",beans);
+    }
+
+    private Set<Class<?>> getTypesAnnotatedWith(List<Class<? extends Annotation>> annotations) {
         // org.example 하위에 해당하는 모든 클래스에 리플랙션을 사용할 것이다
         Reflections reflections = new Reflections("org.example");
 
-        // controller annotation이 있는 대상들을 찾아서 beans라는 해쉬셋에 넣기
         Set<Class<?>> beans = new HashSet<>();
-        beans.addAll(reflections.getTypesAnnotatedWith(Controller.class));
+        annotations.forEach(annotation -> beans.addAll(reflections.getTypesAnnotatedWith(annotation)));
 
-        logger.debug("beans : [{}]",beans);
-
-        /**
-         * 위 부분 리팩토링
-         * */
-
+        return beans;
     }
 }
