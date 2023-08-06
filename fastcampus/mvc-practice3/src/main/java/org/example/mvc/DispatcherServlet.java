@@ -1,6 +1,7 @@
 package org.example.mvc;
 
 import org.example.mvc.controller.Controller;
+import org.example.mvc.controller.RequestMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +30,7 @@ public class DispatcherServlet extends HttpServlet {
         log.info("[DispatcherServlet] service started.");
         try {
             // handlerMapping 통햏서 handler 찾기
-            Controller handler = rmhm.findHandler(request.getRequestURI());
+            Controller handler = rmhm.findHandler(new HandlerKey(RequestMethod.valueOf(request.getMethod() ),request.getRequestURI()));
             String viewName = handler.handleRequest(request, response);
 
             // 핸들러가 찾은 뷰로 request, response 전달

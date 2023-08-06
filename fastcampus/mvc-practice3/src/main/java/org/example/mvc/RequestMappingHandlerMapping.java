@@ -17,8 +17,8 @@ public class RequestMappingHandlerMapping {
     }
 
     // 경로에 맞는 컨트롤러 찾아주기
-    public Controller findHandler(String uriPath){
-        return mappings.get(uriPath);
+    public Controller findHandler(HandlerKey handlerKey){
+        return mappings.get(handlerKey);
     }
 
 }
