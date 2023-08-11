@@ -50,7 +50,7 @@ public class DispatcherServlet extends HttpServlet {
         RequestMethod requestMethod = RequestMethod.valueOf(request.getMethod());
 
         try {
-            // handlerMapping 통햏서 handler 찾기 (handler type을 어노테이션 형태로도 받을 수 있게끔 Controller(인터페이스)에서 Object로 변경)
+            // 1. handlerMapping 통햏서 handler 찾기 (handler type을 어노테이션 형태로도 받을 수 있게끔 Controller(인터페이스)에서 Object로 변경)
             // 기존 하나였을 때 코드 :
             // Object handler = handlerMappings.findHandler(new HandlerKey(RequestMethod.valueOf(request.getMethod() ),request.getRequestURI()));
             Object handler = handlerMappings.stream()
@@ -61,15 +61,17 @@ public class DispatcherServlet extends HttpServlet {
 
 
 
-            // handlerAdapter 가지고 오기
+            // 2. handler를 실행 시켜줄 handlerAdapter를 찾기
             HandlerAdapter handlerAdapter = handlerAdapters.stream()
                     .filter(ha -> ha.supports(handler))
                     .findFirst()
                     .orElseThrow(() -> new ServletException("no adapter for handler [" + handler + "]"));
 
+            // 3. Adapter를 통해서 modelAndView 가지고 오기
             ModelAndView modelAndView = handlerAdapter.handle(request, response, handler);
 
             for (ViewResolver viewResolver : viewResolvers) {
+                // 4. viewResolver를 통해서 view 가지고 오기
                 View view = viewResolver.resolveView(modelAndView.getViewName());
                 view.render(modelAndView.getModel(), request,  response);
             }
